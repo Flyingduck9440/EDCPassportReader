@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">EDCPassportReader</string>
+    <string name="activity_main_txt_terminal_title">Choose terminal</string>
+    <string name="permission_bluetooth_rational_text">This app require bluetooth permission to continue further.</string>
+    <string name="permission_bluetooth_permanently_text">Please enable permission in settings manually.</string>
+    <string name="bluetooth_not_enable">Bluetooth not turn on press OK to turn on bluetooth.</string>
+</resources>
