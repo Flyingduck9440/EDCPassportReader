@@ -4,4 +4,5 @@
     <string name="permission_bluetooth_rational_text">This app require bluetooth permission to continue further.</string>
     <string name="permission_bluetooth_permanently_text">Please enable permission in settings manually.</string>
     <string name="bluetooth_not_enable">Bluetooth not turn on press OK to turn on bluetooth.</string>
+    <string name="bluetooth_not_available">Bluetooth not available.</string>
 </resources>

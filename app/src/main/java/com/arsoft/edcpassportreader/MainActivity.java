@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -57,11 +58,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends CommonActivity implements MessageDialog.MessageDialogListener, BluetoothListAdapter.BluetoothListAdapterListener {
-    private final String[] PERMISSIONS = new String[]{
-            Manifest.permission.BLUETOOTH_CONNECT,
-            Manifest.permission.BLUETOOTH_SCAN,
-            Manifest.permission.NFC
-    };
+    private String[] PERMISSIONS;
     static final int PERMISSION_REQ = 10000;
     static final String PERMISSION_RATIONAL = "rational";
     static final String PERMISSION_PERMANENTLY = "permanently";
@@ -107,6 +104,18 @@ public class MainActivity extends CommonActivity implements MessageDialog.Messag
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            PERMISSIONS = new String[] {
+                    Manifest.permission.NFC,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+        } else {
+            PERMISSIONS = new String[] {
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.NFC,
+            };
+        }
 
         binding.activityMainLlBt.setVisibility(View.GONE);
         binding.activityMainBtRead.setVisibility(View.GONE);
@@ -123,6 +132,11 @@ public class MainActivity extends CommonActivity implements MessageDialog.Messag
         }
 
         if (isAllPermissionGranted) {
+            // Check Bluetooth available
+            if (bluetoothAdapter == null) {
+                showAlertDialog(getString(R.string.bluetooth_not_available), BLUETOOTH_ENABLE);
+                return;
+            }
             // Check Bluetooth Status
             if (bluetoothAdapter.isEnabled()) {
                 initial();
