@@ -30,13 +30,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.arsoft.edcpassportreader.common.CommonActivity;
 import com.arsoft.edcpassportreader.common.EDCTag;
-import com.arsoft.edcpassportreader.databinding.ActivityMainBinding;
 import com.arsoft.edcpassportreader.ui.LoadingDialog;
 import com.arsoft.edcpassportreader.ui.MessageDialog;
 import com.arsoft.edcpassportreader.ui.ProgressDialog;
 import com.arsoft.edcpassportreader.ui.StatusDialog;
 import com.arsoft.edcpassportreader.ui.bluetooth.adapter.BluetoothData;
 import com.arsoft.edcpassportreader.ui.bluetooth.adapter.BluetoothListAdapter;
+import com.arsoft.ol106151.BuildConfig;
+import com.arsoft.ol106151.R;
+import com.arsoft.ol106151.databinding.ActivityMainBinding;
 import com.ingenico.pclservice.PclService;
 import com.ingenico.pclutilities.PclUtilities;
 import com.regula.documentreader.api.DocumentReader;
@@ -176,38 +178,69 @@ public class MainActivity extends CommonActivity implements MessageDialog.Messag
         binding.activityMainBtRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!statusDialog.isAdded()) {
-                    statusDialog.show(getSupportFragmentManager(), "status");
-                }
+                int i = 0;
+                byte[] receive = new byte[1024];
+                int[] receiveLen = new int[1];
+                byte[] result = new byte[1];
 
-                // Start READ EPassport
-                DocumentReader.Instance().readRFID(new EDCTag(mPclService, edcTagListener), new IDocumentReaderCompletion() {
-                    @Override
-                    public void onCompleted(int action, @Nullable DocumentReaderResults documentReaderResults, @Nullable DocumentReaderException e) {
-                        switch (action) {
-                            case DocReaderAction.COMPLETE:
-                                edcTagListener.OnNotify("Read Completed", null);
-                                break;
-                            case DocReaderAction.CANCEL:
-                                edcTagListener.OnNotify("Read Error", null);
-                                break;
-                            case DocReaderAction.NOTIFICATION:
-                                if (documentReaderResults != null && documentReaderResults.documentReaderNotification != null) {
-                                    runOnUiThread(() -> {
-                                        edcTagListener.OnNotify(
-                                                rfidProgress(
-                                                        documentReaderResults.documentReaderNotification.code,
-                                                        documentReaderResults.documentReaderNotification.value
-                                                ), null
-                                        );
-                                    });
-                                }
-                                break;
-                            default:
-                                break;
+                byte[] startNfc = new byte[]{ (byte) 0x30 };
+                byte[] stopNfc = new byte[]{ (byte) 0x32 };
+
+                Log.e("TEST", "Send Open Reader Command: " + EDCTag.bytesToHex(startNfc));
+                mPclService.sendMessage(startNfc, new int[startNfc.length]);
+                mPclService.flushMessages();
+
+                while (true) {
+                    mPclService.receiveMessage(receive, receiveLen);
+                    if (receiveLen[0] != 0) {
+                        result = Arrays.copyOf(receive, receiveLen[0]);
+                        if (String.format("%02X", result[0]).equals("30")) {
+                            Log.e("TEST", "Receive reader status: " + EDCTag.bytesToHex(result));
+                            break;
                         }
                     }
-                });
+                }
+
+                if (String.format("%02X", result[0]).equals("30")) {
+                    if (!statusDialog.isAdded()) {
+                        statusDialog.show(getSupportFragmentManager(), "status");
+                    }
+
+                    // Start READ EPassport
+                    DocumentReader.Instance().readRFID(new EDCTag(mPclService, edcTagListener), new IDocumentReaderCompletion() {
+                        @Override
+                        public void onCompleted(int action, @Nullable DocumentReaderResults documentReaderResults, @Nullable DocumentReaderException e) {
+                            switch (action) {
+                                case DocReaderAction.COMPLETE:
+                                    edcTagListener.OnNotify("Read Completed", null);
+
+                                    mPclService.sendMessage(stopNfc, new int[stopNfc.length]);
+                                    mPclService.flushMessages();
+                                    break;
+                                case DocReaderAction.CANCEL:
+                                    edcTagListener.OnNotify("Read Error", null);
+
+                                    mPclService.sendMessage(stopNfc, new int[stopNfc.length]);
+                                    mPclService.flushMessages();
+                                    break;
+                                case DocReaderAction.NOTIFICATION:
+                                    if (documentReaderResults != null && documentReaderResults.documentReaderNotification != null) {
+                                        runOnUiThread(() -> {
+                                            edcTagListener.OnNotify(
+                                                    rfidProgress(
+                                                            documentReaderResults.documentReaderNotification.code,
+                                                            documentReaderResults.documentReaderNotification.value
+                                                    ), null
+                                            );
+                                        });
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+                }
             }
         });
 

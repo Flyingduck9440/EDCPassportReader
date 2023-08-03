@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.arsoft.edcpassportreader.R;
+import com.arsoft.ol106151.R;
 
 import java.util.ArrayList;
 

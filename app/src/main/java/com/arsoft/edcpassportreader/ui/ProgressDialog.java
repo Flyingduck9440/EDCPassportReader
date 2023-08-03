@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.arsoft.edcpassportreader.databinding.ProgressDialogBinding;
+import com.arsoft.ol106151.databinding.ProgressDialogBinding;
 
 public class ProgressDialog extends DialogFragment {
     ProgressDialogBinding binding;

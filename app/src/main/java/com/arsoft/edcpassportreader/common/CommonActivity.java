@@ -16,7 +16,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
-import com.arsoft.edcpassportreader.BuildConfig;
+import com.arsoft.ol106151.BuildConfig;
 import com.ingenico.pclservice.PclService;
 
 import java.nio.ByteBuffer;

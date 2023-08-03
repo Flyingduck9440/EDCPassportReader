@@ -12,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.arsoft.edcpassportreader.R;
-import com.arsoft.edcpassportreader.databinding.LoadingBinding;
+import com.arsoft.ol106151.R;
+import com.arsoft.ol106151.databinding.LoadingBinding;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 public class LoadingDialog extends DialogFragment {

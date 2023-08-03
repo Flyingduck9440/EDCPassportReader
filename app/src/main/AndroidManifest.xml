@@ -23,7 +23,7 @@
         android:theme="@style/Theme.EDCPassportReader"
         tools:targetApi="s">
         <activity
-            android:name=".MainActivity"
+            android:name="com.arsoft.edcpassportreader.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

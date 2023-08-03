@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.arsoft.edcpassportreader.databinding.StatusDialogBinding;
+import com.arsoft.ol106151.databinding.StatusDialogBinding;
 
 import java.util.Objects;
 

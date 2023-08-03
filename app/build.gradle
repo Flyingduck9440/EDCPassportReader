@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.arsoft.edcpassportreader'
+    namespace 'com.arsoft.ol106151'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.arsoft.edcpassportreader"
+        applicationId "com.arsoft.ol106151"
         minSdk 26
         targetSdk 33
         versionCode 1
