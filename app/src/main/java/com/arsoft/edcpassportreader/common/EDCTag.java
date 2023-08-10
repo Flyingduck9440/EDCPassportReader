@@ -47,6 +47,12 @@ public class EDCTag implements IUniversalNfcTag {
                         if (getFirstByte(result) == (byte) 0x30) {
                             listener.OnNotify(null, String.format("receive msg=%s, len=%d", String.format("%02X", result[0]), receiveLen[0]));
                             break;
+                        } else if (getFirstByte(result) == (byte) 0x31) {
+                            listener.OnNotify(null, String.format("receive msg=%s, len=%d", String.format("%02X", result[0]), receiveLen[0]));
+                            break;
+                        } else if (getFirstByte(result) == (byte) 0x33) {
+                            listener.OnNotify(null, String.format("receive msg=%s, len=%d", String.format("%02X", result[0]), receiveLen[0]));
+                            break;
                         }
                     }
                 }

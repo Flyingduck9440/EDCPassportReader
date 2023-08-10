@@ -46,9 +46,12 @@ import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
 import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.enums.Scenario;
+import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.enums.eRFID_DataFile_Type;
+import com.regula.documentreader.api.enums.eRPRM_ResultType;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.params.DocReaderConfig;
+import com.regula.documentreader.api.results.DocumentReaderGraphicField;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 
 import java.io.IOException;
@@ -178,7 +181,6 @@ public class MainActivity extends CommonActivity implements MessageDialog.Messag
         binding.activityMainBtRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int i = 0;
                 byte[] receive = new byte[1024];
                 int[] receiveLen = new int[1];
                 byte[] result = new byte[1];
@@ -194,14 +196,20 @@ public class MainActivity extends CommonActivity implements MessageDialog.Messag
                     mPclService.receiveMessage(receive, receiveLen);
                     if (receiveLen[0] != 0) {
                         result = Arrays.copyOf(receive, receiveLen[0]);
-                        if (String.format("%02X", result[0]).equals("30")) {
+                        if (EDCTag.bytesToHex(result).equals("30")) {
+                            Log.e("TEST", "Receive reader status: " + EDCTag.bytesToHex(result));
+                            break;
+                        } else if (EDCTag.bytesToHex(result).equals("31")) {
+                            Log.e("TEST", "Receive reader status: " + EDCTag.bytesToHex(result));
+                            break;
+                        } else if (EDCTag.bytesToHex(result).equals("33")) {
                             Log.e("TEST", "Receive reader status: " + EDCTag.bytesToHex(result));
                             break;
                         }
                     }
                 }
 
-                if (String.format("%02X", result[0]).equals("30")) {
+                if (EDCTag.bytesToHex(result).equals("30")) {
                     if (!statusDialog.isAdded()) {
                         statusDialog.show(getSupportFragmentManager(), "status");
                     }
